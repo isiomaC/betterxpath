@@ -1,0 +1,9 @@
+- Detect Position of Mouse to get dom element(s)
+- get full to perform Queries - (use chrome console technique) else probably xpath lib
+- Decide on datastore - something light weight
+- Design UI
+    - Set Up List view for viewing history.
+    - Set Up Edit view to further refine xpath
+    - Set Up Context Menu options
+        - specific
+        - generic
