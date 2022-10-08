@@ -1,0 +1,19 @@
+Current SetUp
+
+- Before running yarn build, have to update vite.config.js to export required files /dist folder,  defineConfig(build -> rollUpOtions -> input {  ...AnyrequiredFiles })
+- After Build succeeded..
+- Have to copy icons over to dist folder
+- Have to update manifest.json with properties from mani.txt(line 63 - 83) e.g name, version, asset, content-secuirty-policy e.t.c.
+- Have to search through dist/assets/{main|index}.{randomString}.js file to update the file locations for executeScripts. 
+         E.g 
+         the below file location for the executeScript function should be updated else an error will be thrown when the function is called.
+         before -> chrome.tabs.executeScript({id}, {file: "/chromeChangeBg.js"} ....
+         after -> chrome.tabs.executeScript({id}, {file: "/assets/chromeChangeBg.849e505b.js"} 
+
+
+To Debug §
+- Add  "runtimeArgs": ["--load-extension=${workspaceFolder}"] to launch.json.
+- make sure app is running as well before debugging, debugger is attached to the app running on the specified port. 
+    debugger doesn't start the app process. 
+
+         for debugger  -  "webRoot": "${workspaceFolder}"
