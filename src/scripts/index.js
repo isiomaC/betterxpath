@@ -2,6 +2,12 @@
 
 //Upgradde to manifest v3 - uses awaits
 
+const getCurrentTab = async () => {
+    let queryOptions = { active: true, lastFocusedWindow: true };
+    // `tab` will either be a `tabs.Tab` instance or `undefined`.
+    let [tab] = await chrome.tabs.query(queryOptions);
+    return tab;
+}
 
 
 const changeColor = async ( ) => {
@@ -73,6 +79,7 @@ const addContextMenu = () => {
     return attached
 }
 
+
 const removeContextMenu = () => {
     const menuId = "rand100"
 
@@ -88,9 +95,11 @@ const removeContextMenu = () => {
     console.log("after remove")
 }
 
+
 export {
     changeColor,
     addContextMenu,
-    removeContextMenu
+    removeContextMenu,
+    getCurrentTab
 }
 

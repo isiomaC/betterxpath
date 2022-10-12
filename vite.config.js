@@ -14,6 +14,8 @@ export default defineConfig({
         // main: '/src/main.jsx',
         chromeChangeBg: '/src/scripts/chromeChangeBg.js', //chrome script to manipulate page ‼️
         index: './index.html',  //html to set in manifes.tjson
+        testCss: '/src/scripts/testCss.css',
+        background: '/src/scripts/service-worker/background.js',
       }
     }
   },

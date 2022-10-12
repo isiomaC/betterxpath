@@ -1,3 +1,8 @@
+- MIGRATE TO v3
+- Test Message Passing Logic from content script to service worker and vice versa
+- Test Accessing service worker(background.js) file from react component
+- Wrap chrome extensionAPI into csManager(rename to ChromeExtensionManager)
+
 - Detect Position of Mouse to get dom element(s)
 - get full to perform Queries - (use chrome console technique) else probably xpath lib
 - Decide on datastore - something light weight
