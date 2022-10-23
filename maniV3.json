@@ -1,0 +1,36 @@
+{
+  "short_name": "Better XPath",
+  "name": "Better Xpath",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "permissions": [
+    "storage",
+    "scripting",
+    "contextMenus",
+    "tabs",
+    "activeTab",
+    "alarms",
+    "notifications"
+  ],
+ 
+  "host_permissions": [
+    "http://*/*", 
+    "https://*/*"
+  ],
+  "action": {
+    "default_popup": "/index.html",
+    "default_icon": {
+      "16": "/assets/29.png",
+      "32": "/assets/29.png",
+      "48": "/assets/29.png",
+      "128": "/assets/29.png" 
+    }
+  },
+  "background": {
+    "service_worker": "/assets/background.75573239.js",
+    "type": "module"
+  },
+  "content_security_policy": {
+    "extension_pages":  "script-src 'self'; object-src 'self'" 
+  }
+}

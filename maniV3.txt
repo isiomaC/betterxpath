@@ -1,0 +1,79 @@
+{
+ "short_name": "Better XPath",
+  "name": "Better Xpath",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "permissions": [
+    "storage",
+    "scripting",
+    "contextMenus",
+    "tabs",
+    "activeTab",
+    "alarms",
+    "notifications"
+  ],
+ 
+  "host_permissions": [
+    "http://*/*", 
+    "https://*/*"
+  ],
+  "action": {
+    "default_popup": "/index.html",
+    "default_icon": {
+      "16": "/assets/29.png",
+      "32": "/assets/29.png",
+      "48": "/assets/29.png",
+      "128": "/assets/29.png" 
+    }
+  },
+  "background": {
+    "service_worker": "/assets/background.75573239.js",
+    "type": "module"
+  },
+  "content_security_policy": {
+    "extension_pages":  "script-src 'self'; object-src 'self'" 
+  },
+
+
+
+   build script - // "move": "yarn build && rm -rf ../static && mv dist/static ../static"
+
+
+
+ "contentScripts": [
+    {
+      "matches":[ 
+        "http://*/*", 
+        "https://*/*"
+      ]
+      "js": ["/assets/contentScript.js"]
+    }
+  ]
+
+
+
+
+  
+
+    "content_security_policy": {
+        "extension_pages":  "script-src 'self'; object-src 'self'" // "script-src 'self' 'sha256-fdAfMKZtCTRPKMRznGwonJHC++vCCrQS7XFnVrzSXAE=' 'sha256-YD8w9VLrdvqI5/tFVmpT+1337ly+e/JvPrkRxYZo/w4='; object-src 'self';",
+    //    "sandbox": "..."
+    },
+
+
+----------Unused--------------
+"web_accessible_resources": [{
+    "resources": [RESOURCE_PATHS],
+    "matches": [MATCH_PATTERNS],
+    "extension_ids": [EXTENSION_IDS],
+    "use_dynamic_url": boolean //optional
+  }],
+    //"optional_host_permissions": [
+    //"*://*/*",
+  //]
+
+
+
+
+
+}

@@ -1,23 +1,110 @@
 /*global chrome*/
+import ContentScriptManager from '../ContentScriptManager'
+// importScripts('../ContentScriptManagerjs') - without module option
 
-//Inititalizer js file - runs to init extension 
+
+
+//Inititalizer js file - runs to installation of extension extension 
 chrome.runtime.onInstalled.addListener(() => {
 
     ///global initializer
+    ContentScriptManager.addContextMenu()
 
     //set state here from Storage
     chrome.action.setBadgeText({
       text: "OFF",
     });
-    
+
     chrome.action.setBadgeBackgroundColor({color: '#4688F1'});
+
+});
+
+//Notification
+chrome.alarms.create({ periodInMinutes: 1 })
+chrome.alarms.onAlarm.addListener(() => {
+
+  const showStayHydratedNotification = () => {
+	  chrome.notifications.create({
+	    type: 'basic',
+	    iconUrl: '29.png',
+	    title: 'Time to Hydrate',
+	    message: 'Everyday I\'m Guzzlin\'!',
+	    buttons: [
+	      { title: 'Keep it Flowing.' }
+	    ],
+	    priority: 0
+	  });
+	}
+  showStayHydratedNotification()
+  console.log('log for debug')
 });
 
 
-//Send Message from content_script
-chrome.runtime.sendMessage({greeting: "hello"}, function(response) {
-    console.log(response.farewell);
+//Context menu listener
+chrome.contextMenus.onClicked.addListener(function(info, tab) {
+  console.log("INFO >>>>>>-",info)
+  console.log("TAB >>>>>>-",tab)
+
+  if (info.menuItemId == "copy") {
+    console.log("copy Xpath!");
+
+    //trigger contentScript using scripting to get element.
+  }
+
+  if (info.menuItemId == "show") {
+    console.log("show Xpath!");
+  }
 });
+
+
+// const filter = {
+//   url: [
+//     {
+//       urlMatches: 'http://localhost:5173/',
+//     },
+//   ],
+// };
+
+// chrome.webNavigation.onCompleted.addListener(() => {
+//   console.info("The user has loaded my favorite localhost!");
+// }, filter);
+
+
+chrome.runtime.onConnect.addListener(() => {
+   console.log("onConnect Called")
+})
+
+
+//Passing message - e.g from contentscript to background
+chrome.runtime.onMessage.addListener( // this is the message listener
+    function(request, sender, sendResponse) {
+
+      console.log(request);
+      console.log(sender);
+
+      console.log(sender.tab ?
+      "from a content script:" + sender.tab.url :
+      "from the extension");
+
+      const runThisFunction = (oldTarget) => {
+        console.log("[runThisFunction] triggered")
+
+        // const dataToSave = {
+        //   'mId': oldTarget.mId,
+        //   'bgColor': oldTarget.bgColor ?? ""
+        // }
+        
+      }
+
+      if (request.data === "highLight"){
+        console.log("Request [onMessage]\t", request)
+        runThisFunction(request.oldTarget);
+        sendResponse({ success: true })
+      }
+    }
+);
+
+
 
 
 
@@ -62,12 +149,21 @@ chrome.runtime.sendMessage({greeting: "hello"}, function(response) {
 // });
 
 
-
+//Fired when an action icon is clicked. This event will not fire if the action has a popup.
+//When you click the icons for the extension
 chrome.action.onClicked.addListener(async (tab) => {
+    const myTab = await ContentScriptManager.getCurrentTab()
 
+    console.log("Tab Click ->>>>", myTab)
+
+    chrome.scripting.executeScript({
+      target: { tabId: myTab.id },
+      files: ['./content-scripts/contentScript.js']
+    });
 
     if (tab.url.startsWith(extensions) || tab.url.startsWith(webstore)) {
 
+      console.log("chrome.action.onClicked.addListener(async (tab) => {")
       // Retrieve the action badge to check if the extension is 'ON' or 'OFF'
       const prevState = await chrome.action.getBadgeText({ tabId: tab.id });
 

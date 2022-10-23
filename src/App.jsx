@@ -1,13 +1,11 @@
 import { useState, useCallback, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import './App.css'
-import { changeColor, addContextMenu, removeContextMenu } from './scripts';
-import csManager, { CursorPoint } from './scripts/csManager';
-
-
+import ContentScriptManager, { CursorPoint } from './scripts/ContentScriptManager';
 const storageCache = {};
 
 function App() {
+  
   const [attached, setAttached] = useState(false)
 
   const [track, setTracking]= useState(false)
@@ -16,12 +14,12 @@ function App() {
 
   const handleMenu = useCallback((phrase)=> {
     if (phrase == "Enable"){
-      addContextMenu()
+      ContentScriptManager.addContextMenu()
       setAttached(true)
     }
 
     if (phrase == "Disable"){
-      removeContextMenu()
+      ContentScriptManager.removeContextMenu()
       setAttached(false)
     }
   }, [])
@@ -34,23 +32,24 @@ function App() {
     let track = true
     setTracking(track)
 
-    await csManager.TrackMouseMovement(track, handlePoint)
+    await ContentScriptManager.TrackMouseMovement(track, handlePoint)
   }, [])
 
   const endTracking = useCallback(async() => {
-
     let track = false
     setTracking(track)
 
-    await csManager.TrackMouseMovement(track, handlePoint)
+    await ContentScriptManager.TrackMouseMovement(track, handlePoint)
+  }, [])
+
+  const triggerContentScript = useCallback(async() => {
+    const tab = await ContentScriptManager.getCurrentTab()
+    await ContentScriptManager.executeContentScript(['/assets/contentScript.js'], tab.id)
   }, [])
 
   useEffect(()=> {
-    (async() => {
-      await csManager.handleListener()
-    })()
     
-    // console.log( csManager.TrackMouseMovement(true, handlePoint))
+    // console.log( ContentScriptManager.TrackMouseMovement(true, handlePoint))
 
     //-----------For v3 use async await initStorageCache;-------------
     
@@ -79,6 +78,9 @@ function App() {
       </div>
       <header>
         <h1>Better Xpath</h1>
+        <button className="card-item" onClick={triggerContentScript}>
+          triggerCS
+        </button>
       </header>
       <div className="card">
         <p>{track ? "cursor tracking Enabled": "cursor tracking Disabled"}</p>
@@ -88,7 +90,7 @@ function App() {
         <button className="card-item" onClick={() => handleMenu(attached ? "Disable": "Enable")}>
           {attached ? "Disbable Menu" : "Enable menu" }
         </button>
-        <button className="card-item" onClick={changeColor}>
+        <button className="card-item" onClick={() => ContentScriptManager.changeColor(['/assets/chromeChangeBg.js']) }>
           Change color
         </button>
       </div>
