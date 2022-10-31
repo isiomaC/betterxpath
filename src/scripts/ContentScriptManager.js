@@ -171,28 +171,16 @@ class ContentScriptManager{
         console.log("after remove")
     }
 
-    static async handleListener(){
-        chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-            console.log(sender.tab ?
-                "from a content script:" + sender.tab.url :
-                "from the extension");
-
-                if (request.greeting === "hello")
-                    sendResponse({farewell: "goodbye"});
-            }
-        );
-    }
-
-    static async insertCSS(fileLocation, tabId){
+    static async insertCSS(fileLocation=[], tabId){
         await chrome.scripting.removeCSS({
-            files: [fileLocation], //"focus-mode.css"
+            files: fileLocation, //"focus-mode.css"
             target: { tabId: tabId },
         });
     }
 
-    static async removeCSS(fileLocation, tabId){
+    static async removeCSS(fileLocation=[], tabId){
         await chrome.scripting.removeCSS({
-            files: [fileLocation], //"focus-mode.css"
+            files: fileLocation, //"focus-mode.css"
             target: { tabId: tabId },
         });
     }
@@ -235,6 +223,14 @@ class ContentScriptManager{
             target: { tabId: tabId },
             func: jsFunc,
             args: args,
+        });
+    }
+
+    static saveChromeStorage(obj, callback){
+        console.log("[saveChromeStorage]", obj)
+        chrome.storage.local.set(obj, () => {
+            console.table(obj)
+            callback()
         });
     }
 

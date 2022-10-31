@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "debugBuild": "yarn build && node postBuild.js"
+    "debugDev": "yarn build && node postBuild.js && yarn dev"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.6",

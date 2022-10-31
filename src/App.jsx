@@ -12,6 +12,9 @@ function App() {
 
   const [point, setPoint] = useState(new CursorPoint())
 
+  //-----
+  // Unused
+  //-----
   const handleMenu = useCallback((phrase)=> {
     if (phrase == "Enable"){
       ContentScriptManager.addContextMenu()
@@ -23,73 +26,47 @@ function App() {
       setAttached(false)
     }
   }, [])
+  //-----
+  // Unused
+  //-----
 
-  const handlePoint = useCallback((mPoint) => {
-    setPoint(mPoint)
+  const triggerTracking = useCallback(async(isOn) => {
+
+    console.log("Is ON ->", isOn)
+
+    setTracking(isOn)
+    
+    ContentScriptManager.saveChromeStorage({ tracking: isOn }, async () => {
+      const tab = await ContentScriptManager.getCurrentTab()
+
+      await ContentScriptManager.executeContentScript(["/assets/trackMouse.js"], tab.id)
+    })
+  
   }, [])
 
-  const startTracking = useCallback(async() => {
-    let track = true
-    setTracking(track)
-
-    await ContentScriptManager.TrackMouseMovement(track, handlePoint)
-  }, [])
-
-  const endTracking = useCallback(async() => {
-    let track = false
-    setTracking(track)
-
-    await ContentScriptManager.TrackMouseMovement(track, handlePoint)
-  }, [])
-
-  const triggerContentScript = useCallback(async() => {
+  const detectXPath = useCallback(async() => {
     const tab = await ContentScriptManager.getCurrentTab()
     await ContentScriptManager.executeContentScript(['/assets/contentScript.js'], tab.id)
   }, [])
 
   useEffect(()=> {
-    
-    // console.log( ContentScriptManager.TrackMouseMovement(true, handlePoint))
 
-    //-----------For v3 use async await initStorageCache;-------------
-    
-    // chrome.action.onClicked.addListener(async (tab) => {
-    //   try {
-    //     await csManager.initStorageCache();
-    //   } catch (e) {
-    //     // Handle error that occurred during storage initialization.
-    //     console.log(e)
-    //   }
-    //   // Normal action handler logic.
-
-    // });
-    
   }, [])
 
   return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
       <header>
         <h1>Better Xpath</h1>
-        <button className="card-item" onClick={triggerContentScript}>
-          triggerCS
+        <button className="card-item" onClick={detectXPath}>
+          Detect Xpath
         </button>
       </header>
       <div className="card">
         <p>{track ? "cursor tracking Enabled": "cursor tracking Disabled"}</p>
-        <button className="card-item" onClick={track ? endTracking : startTracking}>
+        <button className="card-item" onClick={track ? () => triggerTracking(false) : () => triggerTracking(true)}>
           {track ? "Disble Tracking" : "Enable Tracking" }
         </button>
-        <button className="card-item" onClick={() => handleMenu(attached ? "Disable": "Enable")}>
-          {attached ? "Disbable Menu" : "Enable menu" }
-        </button>
+
         <button className="card-item" onClick={() => ContentScriptManager.changeColor(['/assets/chromeChangeBg.js']) }>
           Change color
         </button>

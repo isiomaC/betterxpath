@@ -6,6 +6,7 @@
 
 import { createPopper } from '@popperjs/core';
 
+
 //💡
 //storeXpath and snapshot of what it represents
 const buildXpath = (targetElement) => {
@@ -20,7 +21,7 @@ const buildXpath = (targetElement) => {
                 return true
             }
         }
-        console.log("Xpath Evaluation - Failed")
+        console.log("Xpath Evaluation - Failed \n")
         return false
     }
 
@@ -89,9 +90,8 @@ const buildXpath = (targetElement) => {
     return returnXpath
 }
 
-document.addEventListener('click', function(e)
-{
 
+const addTooltip = (e) => {
     let x = e.pageX ?? e.clientX;
     let y = e.pageY ?? e.clientX;
 
@@ -120,7 +120,7 @@ document.addEventListener('click', function(e)
     }
 
     //--------Tooltip
-    chrome.storage.sync.get(['mId', 'bgColor'], function(result) {
+    chrome.storage.sync.get(['mId', 'bgColor'], (result) => {
 
         console.log('mId currently is ' + result.mId);
         console.log('bgColor currently is ' + result.bgColor);
@@ -131,6 +131,8 @@ document.addEventListener('click', function(e)
                 let element = document.querySelector(`[mId="${result.mId}"]`)
                 if (element){
                     element.style.backgroundColor = result.bgColor ?? ""
+                    element.style.borderColor = "",
+                    element.style.borderRadius = "",
                     console.log("remove tooltip[TOOLTIP]",element)
                 }
                 document.body.removeChild(tooltip);
@@ -138,11 +140,20 @@ document.addEventListener('click', function(e)
         }
 
         const addTooltip = (xpath) => {
-            let wrapper = document.createElement("div");
-            wrapper.id = "tooltip";
-            wrapper.textContent = xpath
-            document.body.appendChild(wrapper);
-            return wrapper
+
+            //tooltip
+            let tooltip = document.createElement("div");
+            tooltip.id = "tooltip";
+            tooltip.textContent = xpath
+            document.body.appendChild(tooltip);
+
+            //arrow direction for tooltip
+            let arrow = document.createElement("div")
+            arrow.id = "arrow"
+            arrow.setAttribute("data-popper-arrow","")
+            tooltip.appendChild(arrow);
+
+            return tooltip
         }
     
         removeTooltip()
@@ -155,13 +166,33 @@ document.addEventListener('click', function(e)
         
         const highLightElement = () => {
 
-            e.target.style.backgroundColor = "blue"
+
+            // e.target.style.backgroundColor = "blue"
+            // e.target.style.borderColor = "red"
+            // e.target.style.borderRadius = "10px"
+
+
+            // e.target.style = {
+            //     ...e?.target?.style,
+            //     backgroundColor : "blue",
+            //     borderColor : "red",
+            //     borderRadius: "5px",
+            // }
+
+            //send message to insertCSS
+            chrome.runtime.sendMessage({data: "insertCSS" }, function(response) {
+                console.log("[response from GET Current Tab]", response.tabId)
+            });
+
             let popper = createPopper(e.target, tooltip, {
                 placement: 'top'
             })
+
             console.log(popper)
+
+            
         }
-    
+
         highLightElement()
        
         chrome.storage.sync.set({ mId: oldTargetMid, bgColor: oldTargetColor }, () => {
@@ -169,72 +200,74 @@ document.addEventListener('click', function(e)
         });
 
     });
+}
+
+
+document.addEventListener('click', function(e)
+{
+    addTooltip(e)
 
     // //send scraped Xpath to background, use background to handle storage 
     // chrome.runtime.sendMessage({data: "highLight", ...others }, function(response) {
-    //     console.log("[response from send message]", response.success);
-
+    //     console.log("[response from send message]", response.success)
     //     console.log("XPath => ", foundXpath)       
-        
     // });
-
 });
 
 
+// document.addEventListener('abcsdef', function(e)
+// {
 
-document.addEventListener('abcsdef', function(e)
-{
+//     var x = e.pageX ?? e.clientX;
+//     var y = e.pageY ?? e.clientX;
 
-    var x = e.pageX ?? e.clientX;
-    var y = e.pageY ?? e.clientX;
+//     const nodeName = e.target.nodeName
 
-    const nodeName = e.target.nodeName
+//     const others = { x, y, nodeName, target: e.target}
 
-    const others = { x, y, nodeName, target: e.target}
+//     // //send scraped Xpath to background, use background to handle storage 
+//     // chrome.runtime.sendMessage({greeting: "hello", ...others }, function(response) {
+//     //     console.log("[response from send message]", response.success);
+//     // });
 
-    // //send scraped Xpath to background, use background to handle storage 
-    // chrome.runtime.sendMessage({greeting: "hello", ...others }, function(response) {
-    //     console.log("[response from send message]", response.success);
-    // });
-
-    console.log("XPath => ", buildXpath(e.target))
-
+//     console.log("XPath => ", buildXpath(e.target))
 
 
-    //--------Tooltip
-    const removeTooltip = () => {
-        const tooltip = document.querySelector('#tooltip');
-        if (tooltip)
-            document.body.removeChild(tooltip);
-    }
 
-    const addTooltip = () => {
-        var wrapper = document.createElement("div");
-        wrapper.id = "tooltip";
-        wrapper.textContent = "This is a tooltip created with HJs"
-        document.body.appendChild(wrapper);
-    }
+//     //--------Tooltip
+//     const removeTooltip = () => {
+//         const tooltip = document.querySelector('#tooltip');
+//         if (tooltip)
+//             document.body.removeChild(tooltip);
+//     }
 
-    removeTooltip()
-    addTooltip()
+//     const addTooltip = () => {
+//         var wrapper = document.createElement("div");
+//         wrapper.id = "tooltip";
+//         wrapper.textContent = "This is a tooltip created with HJs"
+//         document.body.appendChild(wrapper);
+//     }
+
+//     removeTooltip()
+//     addTooltip()
     
-    const tooltip = document.querySelector('#tooltip');
+//     const tooltip = document.querySelector('#tooltip');
 
-    createPopper(e.target, tooltip, {
-        placement: 'top'
-    })
-    //--------TOoltip
+//     createPopper(e.target, tooltip, {
+//         placement: 'top'
+//     })
+//     //--------TOoltip
 
 
 
-    // e.target.style.backgroundColor = 'pink'
-    console.log("Target =>", e.target)
-    console.log("x:- "+ x + "\t" + "y:- " + y )
+//     // e.target.style.backgroundColor = 'pink'
+//     console.log("Target =>", e.target)
+//     console.log("x:- "+ x + "\t" + "y:- " + y )
 
-    console.log("\n")
-    console.log("\n")
-    console.log("\n")
-});
+//     console.log("\n")
+//     console.log("\n")
+//     console.log("\n")
+// });
 
 
 

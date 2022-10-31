@@ -12,11 +12,14 @@ export default defineConfig({
 
       // list out all files you want in production ------  "default .html entry"
       input: {
-        // main: '/src/main.jsx',
+        
+        // trackMouse: '/src/scripts/content-scripts/trackMouse.js', 
         contentScript: '/src/scripts/content-scripts/contentScript.js', //chrome script to manipulate page ‼️
         chromeChangeBg: '/src/scripts/content-scripts/chromeChangeBg.js', //chrome script to manipulate page ‼️
+
         index: './index.html',  //html to set in manifes.tjson
         testCss: '/src/scripts/testCss.css',
+
         background: '/src/scripts/service-worker/background.js',
       }
     }

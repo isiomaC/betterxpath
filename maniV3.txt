@@ -34,6 +34,10 @@
     "extension_pages":  "script-src 'self'; object-src 'self'" 
   },
 
+  //access scripts for dynamic import
+  "web_accessible_resources": [
+    "/assets/*" 
+  ]
 
 
    build script - // "move": "yarn build && rm -rf ../static && mv dist/static ../static"
