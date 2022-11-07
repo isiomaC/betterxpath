@@ -1,0 +1,13 @@
+.container{
+    padding: 1em;
+    display: grid;
+    grid-template-columns: auto auto;
+    border: 1px solid pink;
+    margin: 5px;
+}
+
+.icon-container{
+    display: grid;
+    cursor: pointer;
+    grid-template-columns: auto auto;
+}

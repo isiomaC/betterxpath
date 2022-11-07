@@ -46,3 +46,20 @@
 .read-the-docs {
   color: #888;
 }
+
+.header{
+  padding: 1em;
+  display: grid;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  grid-template-columns: auto auto;
+}
+
+.header-item {
+  text-align: center;
+}
+
+.list-section{
+  border-radius: 5px;
+}

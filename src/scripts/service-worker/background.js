@@ -1,8 +1,7 @@
 /*global chrome*/
+
 import ContentScriptManager from '../ContentScriptManager'
 // importScripts('../ContentScriptManagerjs') - without module option
-
-
 
 //Inititalizer js file - runs to installation of extension extension 
 chrome.runtime.onInstalled.addListener(() => {
@@ -79,7 +78,6 @@ chrome.runtime.onConnect.addListener(() => {
 chrome.runtime.onMessage.addListener( // this is the message listener
     function(request, sender, sendResponse) {
 
-
       console.log(sender.tab ?
       "from a content script:" + sender.tab.url :
       "from the extension");
@@ -114,11 +112,25 @@ chrome.action.onClicked.addListener(async (tab) => {
   try {
     await ContentScriptManager.initStorageCache();
   } catch (e) {
-    console.log(e)
+    console.log("initStorageCache",e)
   }
   // Other Normal action handler logic go below
 
 });
+
+
+chrome.storage.onChanged.addListener((changes, area) => {
+  console.log("CHANGES",changes)
+  console.log("CHANGES NEW VALUE", changes.options?.newValue)
+  if (area === 'sync' && changes.options?.newValue) {
+    const debugMode = Boolean(changes.options.newValue.debug);
+    chrome.runtime.sendMessage({ data:"SaveCaptured" },function(response){
+      
+    });
+  }
+});
+
+
 
 
 

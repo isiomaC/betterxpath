@@ -15,6 +15,16 @@ class ContentScriptManager{
 
     constructor(){ }
 
+    static getStorageData = (key) => {
+        let returnVal;
+        (() => {
+            chrome.storage.sync.get([key], (result) => {
+                returnVal = result[key]
+            });
+        })() 
+        return returnVal
+    }
+
     static getCurrentTab = async () => {
         let returnTab
         try{
@@ -185,7 +195,7 @@ class ContentScriptManager{
         });
     }
 
-    static async initStorageCache(storageCache){
+    static async initStorageCache(storageCache={}){
         getAllStorageSyncData().then(items => {
             // Copy the data retrieved from storage into storageCache.
             Object.assign(storageCache, items);
@@ -200,7 +210,7 @@ class ContentScriptManager{
             chrome.storage.sync.get(null, (items) => {
 
                 if (chrome.runtime.lastError) {
-                return reject(chrome.runtime.lastError);
+                    return reject(chrome.runtime.lastError);
                 }
 
                 resolve(items);

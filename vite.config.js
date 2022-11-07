@@ -13,7 +13,10 @@ export default defineConfig({
       // list out all files you want in production ------  "default .html entry"
       input: {
         
-        // trackMouse: '/src/scripts/content-scripts/trackMouse.js', 
+        startDetection: '/src/scripts/content-scripts/startDetection.js', //chrome script to manipulate page ‼️
+        stopDetection: '/src/scripts/content-scripts/stopDetection.js', //chrome script to manipulate page ‼️
+
+
         contentScript: '/src/scripts/content-scripts/contentScript.js', //chrome script to manipulate page ‼️
         chromeChangeBg: '/src/scripts/content-scripts/chromeChangeBg.js', //chrome script to manipulate page ‼️
 

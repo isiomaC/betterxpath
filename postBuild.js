@@ -90,13 +90,15 @@ const updateIndexFile = (path) => {
 
                 const scriptNamePostBuild = dir.find((item) => item.includes(name) && item.includes(ext))
 
+                // Only grab index page content on first run, will be updating thesame index 
+                // pagecontent for the remaining content script files
                 if (index === 0){
 
                     [pageName, pageContent] = getPostBuildIndexPage(indexPages, scriptName)
 
                     if (pageName === undefined || pageContent === undefined){
                         console.log("Directory already Updated")
-                        return
+                        continue;
                     }
                     indexPageName = pageName
                 }
