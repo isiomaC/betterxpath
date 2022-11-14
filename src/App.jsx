@@ -7,11 +7,25 @@ import ContentScriptManager, { CursorPoint } from './scripts/ContentScriptManage
 import XpathListItem from './components/XpathListItem'
 const storageCache = {};
 
+const getChromeExtStorage = () => {
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.get(["xpaths"], (result) => {
+
+      if (!result || !result?.xpaths) 
+        reject([]);
+
+      const savedXpaths = result?.xpaths
+
+      resolve(savedXpaths);
+    })
+  });
+}
+
 function App() {
   
   const [track, setTracking] = useState(false)
 
-  const [xpaths, setXpaths] = useState([])
+  const [xpaths, setXpaths] = useState(() => getChromeExtStorage())
 
   const trackCaptured = useRef(false)
 
@@ -48,18 +62,17 @@ function App() {
 
   useEffect(()=> {
 
-    chrome.runtime.onMessage.addListener( // this is the message listener
-    function(request, sender, sendResponse) {
+  //   chrome.runtime.onMessage.addListener( // this is the message listener
+  //   function(request, sender, sendResponse) {
 
-      if (request.data === "SaveCaptured"){
-        console.log("Captured send message in react component")
-        sendResponse({ success: true })
-      }
+  //     if (request.data === "SaveCaptured"){
+  //       console.log("Captured send message in react component")
+  //       sendResponse({ success: true })
+  //     }
 
-  });
+  // });
     try{
       chrome.storage.sync.get(["isTracking", "xpaths"], (result) => {
-        console.log("[use effect query]",result)
         setXpaths(result?.xpaths)
         if (trackCaptured.current === false){
           setTracking(result?.isTracking ?? false)

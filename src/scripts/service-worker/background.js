@@ -121,13 +121,13 @@ chrome.action.onClicked.addListener(async (tab) => {
 
 chrome.storage.onChanged.addListener((changes, area) => {
   console.log("CHANGES",changes)
-  console.log("CHANGES NEW VALUE", changes.options?.newValue)
-  if (area === 'sync' && changes.options?.newValue) {
-    const debugMode = Boolean(changes.options.newValue.debug);
-    chrome.runtime.sendMessage({ data:"SaveCaptured" },function(response){
+  console.log("CHANGES NEW VALUE", changes.isTracking?.newValue)
+  // if (area === 'sync' && changes.isTracking?.newValue) {
+  //   const debugMode = Boolean(changes.options.newValue.debug);
+  //   chrome.runtime.sendMessage({ data:"SaveCaptured" },function(response){
       
-    });
-  }
+  //   });
+  // }
 });
 
 

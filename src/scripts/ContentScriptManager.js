@@ -16,13 +16,17 @@ class ContentScriptManager{
     constructor(){ }
 
     static getStorageData = (key) => {
-        let returnVal;
-        (() => {
+        return new Promise((resolve, reject) => {
+            let returnVal;
             chrome.storage.sync.get([key], (result) => {
                 returnVal = result[key]
+
+                if (!returnVal)
+                    reject(new Error(`${key} doesn't exits in chrome storage`))
+
+                resolve(returnVal)
             });
-        })() 
-        return returnVal
+        })
     }
 
     static getCurrentTab = async () => {
